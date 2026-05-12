@@ -1,16 +1,61 @@
-# React + Vite
+💈 Sr Barbeiro — Sistema para Barbearia
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema moderno de agendamento para barbearias desenvolvido com React + Vite + TailwindCSS, focado em experiência premium, design moderno e responsividade.
 
-Currently, two official plugins are available:
+🚀 Demonstração
+Funcionalidades principais
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+✅ Landing page premium
+✅ Sistema de agendamento moderno
+✅ Calendário semanal inteligente
+✅ Bloqueio de dias passados
+✅ Horários ocupados automaticamente
+✅ Confirmação via WhatsApp
+✅ Painel administrativo
+✅ Catálogo de serviços
+✅ Galeria estilo Instagram
+✅ Responsivo para mobile
+✅ Animações suaves com Framer Motion
+✅ Toast notifications modernas
 
-## React Compiler
+🛠️ Tecnologias utilizadas
+React
+Vite
+TailwindCSS
+Framer Motion
+React Icons
+LocalStorage
+📱 Responsividade
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+O sistema foi desenvolvido para funcionar em:
 
-## Expanding the ESLint configuration
+Desktop
+Tablets
+Smartphones
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Com foco em UX moderna e experiência fluida.
+
+📅 Sistema de Agendamento
+
+O cliente pode:
+
+escolher dia
+selecionar profissional
+escolher horário
+confirmar via WhatsApp
+
+O sistema:
+
+bloqueia horários ocupados
+impede datas passadas
+salva agendamentos localmente
+📊 Painel Administrativo
+
+O barbeiro pode visualizar:
+
+agendamentos
+horários
+pagamentos
+clientes
+
+Tudo através de uma interface moderna e minimalista.
