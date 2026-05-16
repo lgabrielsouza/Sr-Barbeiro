@@ -4,6 +4,7 @@ import Home from "./pages/Home"
 import Pagamento from "./pages/pagamento"
 import Confirmado from "./pages/confirmado"
 import Admin from "./pages/admin"
+import Services from "./pages/Services"
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <Route path="/" element={<Home />} />
       <Route path="/pagamento" element={<Pagamento />} />
       <Route path="/confirmado" element={<Confirmado />} />
+      <Route path="/services" element={<Services />} />
       <Route path="/admin" element={<Admin />} /> {/* 👈 AQUI DENTRO */}
     </Routes>
   )

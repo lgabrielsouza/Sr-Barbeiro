@@ -1,175 +1,202 @@
-import { FaWhatsapp, FaInstagram, FaBeer, FaSnowflake, FaUserTie, FaBars } from "react-icons/fa";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { NavLink } from "react-router-dom";
+import { Scissors, Clock, Award, Users } from "lucide-react";
 
 export default function Home() {
-
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const imagens = [
-    { img: "https://picsum.photos/500/400?1", tipo: "ANTES" },
-    { img: "https://picsum.photos/500/400?2", tipo: "DEPOIS" },
-    { img: "https://picsum.photos/500/400?3", tipo: "ANTES" },
-    { img: "https://picsum.photos/500/400?4", tipo: "DEPOIS" },
-    { img: "https://picsum.photos/500/400?5", tipo: "ANTES" },
-    { img: "https://picsum.photos/500/400?6", tipo: "DEPOIS" },
-  ];
-
-  const catalogo = [
-    { nome: "Corte Social", preco: "R$ 40", desc: "Corte tradicional com acabamento." },
-    { nome: "Degradê", preco: "R$ 50", desc: "Fade moderno com transição suave." },
-    { nome: "Barba", preco: "R$ 30", desc: "Navalha + toalha quente." },
-    { nome: "Combo", preco: "R$ 70", desc: "Corte + barba.", destaque: true },
-  ];
-
   return (
-    <div className="bg-[#0F0F0F] text-white pt-20">
-
-      {/* NAVBAR */}
-      <header className="fixed top-0 left-0 w-full bg-black/80 backdrop-blur z-50">
-        <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
-
-          <h1 className="text-[#C89B55] font-bold">O Corte & Navalha</h1>
-
-          <nav className="hidden md:flex gap-6 text-sm">
-            <a href="#servicos">Serviços</a>
-            <a href="#catalogo">Catálogo</a>
-            <a href="#galeria">Galeria</a>
-          </nav>
-
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden">
-            <FaBars />
-          </button>
-
-          <a href="/pagamento" className="hidden md:block bg-[#C89B55] px-4 py-2 rounded text-black">
-            Agendar
-          </a>
+    <div>
+      <section className="relative h-[600px] bg-neutral-900 text-white overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1610475680335-dafab5475150?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920"
+            alt="Interior da barbearia"
+            className="w-full h-full object-cover opacity-50"
+          />
         </div>
 
-        {menuOpen && (
-          <div className="md:hidden bg-black p-4 flex flex-col gap-3">
-            <a href="#servicos">Serviços</a>
-            <a href="#catalogo">Catálogo</a>
-            <a href="#galeria">Galeria</a>
-            <a href="/pagamento" className="bg-[#C89B55] text-black px-4 py-2 rounded text-center">
-              Agendar
-            </a>
-          </div>
-        )}
-      </header>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+          <div className="max-w-2xl">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              Estilo & Tradição
+            </h1>
 
-      {/* HERO */}
-      <section className="h-screen flex items-center justify-center text-center px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 80 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h1 className="text-4xl md:text-6xl font-bold">
-            Mais que um corte, <span className="text-[#C89B55]">um ritual</span>
-          </h1>
+            <p className="text-xl md:text-2xl mb-8 text-neutral-200">
+              A melhor experiência em cortes masculinos. Profissionais
+              qualificados e ambiente acolhedor.
+            </p>
 
-          <p className="text-gray-400 mt-4">
-            Experiência premium em cada detalhe
-          </p>
+            <div className="flex flex-wrap gap-4">
+              <NavLink
+                to="/pagamento"
+                className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-md font-semibold transition-colors shadow-lg"
+              >
+                Agendar Agora
+              </NavLink>
 
-          <a href="/pagamento" className="mt-6 inline-block bg-[#C89B55] text-black px-6 py-3 rounded-xl">
-            Agendar Agora
-          </a>
-        </motion.div>
-      </section>
-
-      {/* CATÁLOGO (RESTAURADO) */}
-      <motion.section
-        id="catalogo"
-        className="max-w-6xl mx-auto py-20 px-4"
-        initial={{ opacity: 0, y: 60 }}
-        whileInView={{ opacity: 1, y: 0 }}
-      >
-        <h2 className="text-3xl text-center mb-12">Catálogo de Preços</h2>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {catalogo.map((item, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              className={`p-6 rounded-xl ${
-                item.destaque
-                  ? "border-2 border-[#C89B55] bg-black/40"
-                  : "border border-gray-800"
-              }`}
-            >
-              <h3 className="text-xl mb-2">{item.nome}</h3>
-
-              <p className="text-gray-400 mb-4">{item.desc}</p>
-
-              <span className="text-[#C89B55] font-bold">{item.preco}</span>
+              <NavLink
+                to="/services"
+                className="border-2 border-white hover:bg-white hover:text-neutral-900 text-white px-8 py-3 rounded-md font-semibold transition-colors"
+              >
+                Ver Serviços
+              </NavLink>
 
               <a
-                href="/pagamento"
-                className="block mt-4 bg-[#C89B55] text-black py-2 rounded text-center"
+                href="#galeria"
+                className="border-2 border-white hover:bg-white hover:text-neutral-900 text-white px-8 py-3 rounded-md font-semibold transition-colors"
               >
-                Agendar
+                Galeria
               </a>
-            </motion.div>
-          ))}
+            </div>
+          </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* GALERIA */}
-      <section id="galeria" className="max-w-6xl mx-auto py-20 px-4">
-        <h2 className="text-3xl text-center mb-12">Resultados Reais</h2>
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-neutral-900 mb-4">
+              Por que nos escolher?
+            </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {imagens.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ scale: 1.05 }}
-              className="relative overflow-hidden rounded-xl group"
+            <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
+              Combinamos técnicas tradicionais com as tendências mais modernas
+              do mercado
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center p-6">
+              <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Scissors className="w-8 h-8 text-amber-600" />
+              </div>
+
+              <h3 className="text-xl font-bold text-neutral-900 mb-2">
+                Profissionais
+              </h3>
+
+              <p className="text-neutral-600">
+                Barbeiros experientes e altamente qualificados
+              </p>
+            </div>
+
+            <div className="text-center p-6">
+              <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock className="w-8 h-8 text-amber-600" />
+              </div>
+
+              <h3 className="text-xl font-bold text-neutral-900 mb-2">
+                Pontualidade
+              </h3>
+
+              <p className="text-neutral-600">
+                Agendamento online e horários flexíveis
+              </p>
+            </div>
+
+            <div className="text-center p-6">
+              <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Award className="w-8 h-8 text-amber-600" />
+              </div>
+
+              <h3 className="text-xl font-bold text-neutral-900 mb-2">
+                Qualidade
+              </h3>
+
+              <p className="text-neutral-600">
+                Produtos premium e equipamentos modernos
+              </p>
+            </div>
+
+            <div className="text-center p-6">
+              <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-amber-600" />
+              </div>
+
+              <h3 className="text-xl font-bold text-neutral-900 mb-2">
+                Atendimento
+              </h3>
+
+              <p className="text-neutral-600">
+                Ambiente acolhedor e atendimento personalizado
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-neutral-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-bold text-neutral-900 mb-6">
+                Mais de 10 anos de experiência
+              </h2>
+
+              <p className="text-lg text-neutral-600 mb-6">
+                Nossa barbearia é referência em cortes masculinos, barba e
+                tratamentos capilares. Cada cliente recebe atenção especial e
+                um serviço personalizado de acordo com seu estilo.
+              </p>
+
+              <p className="text-lg text-neutral-600 mb-8">
+                Utilizamos apenas produtos de alta qualidade e mantemos nossos
+                profissionais sempre atualizados com as últimas tendências e
+                técnicas do mercado.
+              </p>
+
+              <a
+                href="#catalogo"
+                className="inline-block bg-neutral-900 hover:bg-neutral-800 text-white px-8 py-3 rounded-md font-semibold transition-colors"
+              >
+                Conheça nossos serviços
+              </a>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <img
+                src="https://images.unsplash.com/photo-1754294437661-129b86f868ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600"
+                alt="Barbearia"
+                className="w-full h-64 object-cover rounded-lg shadow-lg"
+              />
+
+              <img
+                src="https://images.unsplash.com/photo-1759142449398-89357aa1bb36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600"
+                alt="Barbearia"
+                className="w-full h-64 object-cover rounded-lg shadow-lg mt-8"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-amber-500 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold mb-6">
+            Pronto para um novo visual?
+          </h2>
+
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Agende seu horário agora e garanta o melhor atendimento
+          </p>
+
+          <div className="flex flex-wrap gap-4 justify-center">
+            <NavLink
+              to="/pagamento"
+              className="inline-block bg-white text-amber-500 hover:bg-neutral-100 px-8 py-3 rounded-md font-semibold transition-colors shadow-lg"
             >
-              <img src={item.img} className="w-full h-56 object-cover" />
-            </motion.div>
-          ))}
+              Agendar Online
+            </NavLink>
+
+            <a
+              href="https://wa.me/5583999999999"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block border-2 border-white hover:bg-white hover:text-amber-500 text-white px-8 py-3 rounded-md font-semibold transition-colors"
+            >
+              WhatsApp
+            </a>
+          </div>
         </div>
       </section>
-
-      {/* DIFERENCIAIS */}
-      <section className="bg-black py-20">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 text-center">
-
-          <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 50 }}>
-            <FaBeer className="mx-auto text-[#C89B55]" />
-            <p>Cerveja artesanal</p>
-          </motion.div>
-
-          <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 50 }}>
-            <FaSnowflake className="mx-auto text-[#C89B55]" />
-            <p>Ambiente climatizado</p>
-          </motion.div>
-
-          <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 50 }}>
-            <FaUserTie className="mx-auto text-[#C89B55]" />
-            <p>Profissionais experientes</p>
-          </motion.div>
-
-        </div>
-      </section>
-
-      {/* WHATSAPP */}
-      <a href="https://wa.me/5583999999999"
-        className="fixed bottom-4 right-4 bg-green-500 p-4 rounded-full">
-        <FaWhatsapp />
-      </a>
-
-      {/* INSTAGRAM */}
-      <a href="https://instagram.com/SEU_USUARIO"
-        className="fixed bottom-20 right-4 bg-pink-500 p-4 rounded-full">
-        <FaInstagram />
-      </a>
-
     </div>
-  )
+  );
 }
