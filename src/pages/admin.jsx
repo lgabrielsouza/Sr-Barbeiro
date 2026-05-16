@@ -1,282 +1,246 @@
-import { useEffect, useState } from "react"
-import {
-  FaCalendarAlt,
-  FaMoneyBillWave,
-  FaUsers,
-  FaCog,
-  FaCheckCircle,
-  FaClock,
-  FaTrash,
-} from "react-icons/fa"
-
-import { motion } from "framer-motion"
+import { useState } from "react"
 
 export default function Admin() {
 
-  const [agendamentos, setAgendamentos] = useState([])
-  const [filtro, setFiltro] = useState("Todos")
+  const [aba, setAba] = useState("dashboard")
 
-  // 🔄 CARREGAR
-  useEffect(() => {
-    const dados =
-      JSON.parse(localStorage.getItem("agendamentos")) || []
+  const [agendamentos, setAgendamentos] = useState(() => {
 
-    setAgendamentos(dados)
-  }, [])
-
-  // 💰 CONFIRMAR
-  const confirmarPagamento = (index) => {
-    const lista = [...agendamentos]
-
-    lista[index].pagamento = "confirmado"
-
-    localStorage.setItem(
-      "agendamentos",
-      JSON.stringify(lista)
+    return (
+      JSON.parse(
+        localStorage.getItem("agendamentos")
+      ) || []
     )
-
-    setAgendamentos(lista)
-  }
-
-  // ❌ REMOVER
-  const removerAgendamento = (index) => {
-    const lista = [...agendamentos]
-
-    lista.splice(index, 1)
-
-    localStorage.setItem(
-      "agendamentos",
-      JSON.stringify(lista)
-    )
-
-    setAgendamentos(lista)
-  }
-
-  // 🎯 FILTRAR
-  const filtrados =
-    filtro === "Todos"
-      ? agendamentos
-      : agendamentos.filter(
-          (item) => item.profissional === filtro
-        )
-
-  // 📊 ESTATÍSTICAS
-  const total = agendamentos.length
-
-  const pagos = agendamentos.filter(
-    (a) => a.pagamento === "confirmado"
-  ).length
-
-  const pendentes = total - pagos
+  })
 
   return (
+
     <div className="min-h-screen bg-black text-white flex">
 
       {/* SIDEBAR */}
-      <aside className="w-72 bg-[#0f0f0f] border-r border-gray-800 p-6 hidden md:flex flex-col">
+      <aside className="w-72 bg-[#0d0d0d] border-r border-gray-800 p-6 hidden md:flex flex-col">
 
-        <h1 className="text-2xl font-bold text-[#C89B55] mb-10">
+        <h1 className="text-2xl font-bold mb-10 text-[#C89B55]">
           Barber Admin
         </h1>
 
-        <nav className="space-y-4">
+        <div className="space-y-3">
 
-          <button className="w-full flex items-center gap-3 bg-[#C89B55] text-black px-4 py-3 rounded-xl font-semibold">
-            <FaCalendarAlt />
+          <button
+            onClick={() => setAba("dashboard")}
+            className={`w-full text-left px-5 py-4 rounded-2xl transition font-medium ${
+              aba === "dashboard"
+                ? "bg-[#C89B55] text-black"
+                : "hover:bg-[#1a1a1a]"
+            }`}
+          >
             Dashboard
           </button>
 
-          <button className="w-full flex items-center gap-3 hover:bg-[#1a1a1a] px-4 py-3 rounded-xl transition">
-            <FaMoneyBillWave />
+          <button
+            onClick={() => setAba("pagamentos")}
+            className={`w-full text-left px-5 py-4 rounded-2xl transition font-medium ${
+              aba === "pagamentos"
+                ? "bg-[#C89B55] text-black"
+                : "hover:bg-[#1a1a1a]"
+            }`}
+          >
             Pagamentos
           </button>
 
-          <button className="w-full flex items-center gap-3 hover:bg-[#1a1a1a] px-4 py-3 rounded-xl transition">
-            <FaUsers />
+          <button
+            onClick={() => setAba("clientes")}
+            className={`w-full text-left px-5 py-4 rounded-2xl transition font-medium ${
+              aba === "clientes"
+                ? "bg-[#C89B55] text-black"
+                : "hover:bg-[#1a1a1a]"
+            }`}
+          >
             Clientes
           </button>
 
-          <button className="w-full flex items-center gap-3 hover:bg-[#1a1a1a] px-4 py-3 rounded-xl transition">
-            <FaCog />
-            Configurações
-          </button>
-
-        </nav>
+        </div>
 
       </aside>
 
       {/* CONTEÚDO */}
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-6 md:p-10">
 
-        {/* TOPO */}
-        <div className="mb-10">
+        {/* DASHBOARD */}
+        {aba === "dashboard" && (
 
-          <h1 className="text-3xl font-bold">
-            Dashboard
-          </h1>
+          <div>
 
-          <p className="text-gray-400 mt-2">
-            Controle completo da barbearia
-          </p>
+            <div className="mb-10">
 
-        </div>
+              <h2 className="text-4xl font-bold">
+                Dashboard
+              </h2>
 
-        {/* CARDS */}
-        <div className="grid md:grid-cols-3 gap-5 mb-10">
+              <p className="text-gray-500 mt-2">
+                Controle geral da barbearia
+              </p>
 
-          <motion.div
-            whileHover={{ y: -5 }}
-            className="bg-[#111] border border-gray-800 rounded-2xl p-5"
-          >
-            <p className="text-gray-400 text-sm">
-              Total Agendamentos
-            </p>
-
-            <h2 className="text-4xl font-bold mt-3">
-              {total}
-            </h2>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ y: -5 }}
-            className="bg-[#111] border border-green-500/20 rounded-2xl p-5"
-          >
-            <p className="text-green-400 text-sm">
-              Pagamentos Confirmados
-            </p>
-
-            <h2 className="text-4xl font-bold mt-3 text-green-400">
-              {pagos}
-            </h2>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ y: -5 }}
-            className="bg-[#111] border border-yellow-500/20 rounded-2xl p-5"
-          >
-            <p className="text-yellow-400 text-sm">
-              Pendentes
-            </p>
-
-            <h2 className="text-4xl font-bold mt-3 text-yellow-400">
-              {pendentes}
-            </h2>
-          </motion.div>
-
-        </div>
-
-        {/* FILTROS */}
-        <div className="flex gap-3 flex-wrap mb-8">
-
-          {["Todos", "Lucas", "João", "Carlos"].map((nome, i) => (
-
-            <button
-              key={i}
-              onClick={() => setFiltro(nome)}
-              className={`px-4 py-2 rounded-xl transition ${
-                filtro === nome
-                  ? "bg-[#C89B55] text-black"
-                  : "bg-[#111] border border-gray-700 hover:border-[#C89B55]"
-              }`}
-            >
-              {nome}
-            </button>
-
-          ))}
-
-        </div>
-
-        {/* LISTA */}
-        <div className="space-y-5">
-
-          {filtrados.length === 0 && (
-            <div className="bg-[#111] rounded-2xl p-10 text-center text-gray-500">
-              Nenhum agendamento encontrado
             </div>
-          )}
 
-          {filtrados.map((item, index) => (
+            {/* CARDS */}
+            <div className="grid md:grid-cols-3 gap-6 mb-10">
 
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-[#111] border border-gray-800 rounded-2xl p-6"
-            >
+              <div className="bg-[#111] border border-gray-800 rounded-3xl p-6">
 
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <p className="text-gray-400">
+                  Total de Agendamentos
+                </p>
 
-                {/* INFO */}
-                <div>
+                <h3 className="text-4xl font-bold mt-3">
+                  {agendamentos.length}
+                </h3>
 
-                  <h2 className="text-xl font-semibold">
-                    {item.profissional}
-                  </h2>
+              </div>
 
-                  <div className="mt-3 space-y-2 text-gray-300">
+              <div className="bg-[#111] border border-green-500/30 rounded-3xl p-6">
 
-                    <p>
-                      👤 Cliente: {item.cliente}
+                <p className="text-green-400">
+                  Confirmados
+                </p>
+
+                <h3 className="text-4xl font-bold mt-3 text-green-400">
+
+                  {
+                    agendamentos.filter(
+                      item => item.status === "confirmado"
+                    ).length
+                  }
+
+                </h3>
+
+              </div>
+
+              <div className="bg-[#111] border border-yellow-500/30 rounded-3xl p-6">
+
+                <p className="text-yellow-400">
+                  Pendentes
+                </p>
+
+                <h3 className="text-4xl font-bold mt-3 text-yellow-400">
+
+                  {
+                    agendamentos.filter(
+                      item => item.status === "pendente"
+                    ).length
+                  }
+
+                </h3>
+
+              </div>
+
+            </div>
+
+            {/* AGENDAMENTOS */}
+            <div className="space-y-5">
+
+              {agendamentos.map((item, index) => (
+
+                <div
+                  key={index}
+                  className="bg-[#111] border border-gray-800 rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5"
+                >
+
+                  <div>
+
+                    <h3 className="text-xl font-bold">
+                      {item.cliente}
+                    </h3>
+
+                    <p className="text-gray-400 mt-1">
+                      Barbeiro: {item.profissional}
                     </p>
 
-                    <p>
-                      📅 Data: {item.data}
-                    </p>
-
-                    <p>
-                      ⏰ Horário: {item.horario}
+                    <p className="text-gray-500 text-sm mt-2">
+                      📅 {item.data} • ⏰ {item.horario}
                     </p>
 
                   </div>
 
-                </div>
-
-                {/* STATUS */}
-                <div className="flex flex-col items-start md:items-end gap-4">
-
-                  {item.pagamento === "confirmado" ? (
-                    <div className="flex items-center gap-2 text-green-400">
-                      <FaCheckCircle />
-                      Confirmado
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 text-yellow-400">
-                      <FaClock />
-                      Pendente
-                    </div>
-                  )}
-
                   {/* BOTÕES */}
-                  <div className="flex gap-3 flex-wrap">
+                  <div className="flex items-center gap-3 flex-wrap">
 
-                    {item.pagamento !== "confirmado" && (
+                    <span
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold ${
+                        item.status === "confirmado"
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-yellow-500/20 text-yellow-400"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+
+                    {item.status !== "confirmado" && (
+
                       <button
-                        onClick={() => confirmarPagamento(index)}
-                        className="bg-green-500 hover:bg-green-600 transition px-4 py-2 rounded-xl text-black font-semibold"
+
+                        onClick={() => {
+
+                          const novosAgendamentos = [...agendamentos]
+
+                          novosAgendamentos[index].status =
+                            "confirmado"
+
+                          novosAgendamentos[index].pagamento =
+                            "confirmado"
+
+                          setAgendamentos(novosAgendamentos)
+
+                          localStorage.setItem(
+                            "agendamentos",
+                            JSON.stringify(novosAgendamentos)
+                          )
+                        }}
+
+                        className="bg-[#C89B55] hover:opacity-90 text-black px-4 py-2 rounded-xl font-semibold transition"
                       >
+
                         Confirmar
+
                       </button>
+
                     )}
 
                     <button
-                      onClick={() => removerAgendamento(index)}
-                      className="bg-red-500 hover:bg-red-600 transition px-4 py-2 rounded-xl font-semibold flex items-center gap-2"
+
+                      onClick={() => {
+
+                        const novaLista =
+                          agendamentos.filter(
+                            (_, i) => i !== index
+                          )
+
+                        setAgendamentos(novaLista)
+
+                        localStorage.setItem(
+                          "agendamentos",
+                          JSON.stringify(novaLista)
+                        )
+                      }}
+
+                      className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl transition"
                     >
-                      <FaTrash />
+
                       Remover
+
                     </button>
 
                   </div>
 
                 </div>
 
-              </div>
+              ))}
 
-            </motion.div>
+            </div>
 
-          ))}
+          </div>
 
-        </div>
+        )}
 
       </main>
 

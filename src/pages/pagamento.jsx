@@ -1,3 +1,5 @@
+// 📁 src/pages/pagamento.jsx
+
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -13,10 +15,8 @@ export default function Pagamento() {
   const [profissional, setProfissional] = useState(null)
   const [horario, setHorario] = useState(null)
 
-  // 🔥 SEMANA
   const [offsetSemana, setOffsetSemana] = useState(0)
 
-  // 🔥 TOAST
   const [toast, setToast] = useState(false)
 
   // 📅 GERAR SEMANA
@@ -57,7 +57,6 @@ export default function Pagamento() {
 
       data.setDate(primeiroDia.getDate() + i)
 
-      // 🔥 VERIFICAR SE JÁ PASSOU
       const hojeSemHora = new Date()
 
       hojeSemHora.setHours(0, 0, 0, 0)
@@ -93,6 +92,7 @@ export default function Pagamento() {
 
   // 👤 PROFISSIONAIS
   const profissionais = [
+
     {
       nome: "Lucas",
       foto:
@@ -146,15 +146,18 @@ export default function Pagamento() {
 
   // 🔒 HORÁRIOS OCUPADOS
   const horariosOcupados = agendamentos
+
     .filter(
       (item) =>
         item.data === dias[diaSelecionado]?.full &&
         item.profissional ===
-          profissionais[profissional]?.nome
+          profissionais[profissional]?.nome &&
+        item.status === "confirmado"
     )
+
     .map((item) => item.horario)
 
-  // 💾 SALVAR
+  // 💾 SALVAR AGENDAMENTO
   const salvarAgendamento = () => {
 
     const agendamento = {
@@ -167,6 +170,8 @@ export default function Pagamento() {
 
       profissional:
         profissionais[profissional].nome,
+
+      status: "pendente",
 
       pagamento: "pendente",
     }
@@ -225,9 +230,6 @@ export default function Pagamento() {
 
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-10 relative overflow-hidden">
 
-      {/* GLOW */}
-      <div className="absolute w-[500px] h-[500px] bg-[#C89B55]/10 blur-3xl rounded-full top-[-150px] left-[-150px]" />
-
       {/* TOAST */}
       <AnimatePresence>
 
@@ -274,24 +276,7 @@ export default function Pagamento() {
       </AnimatePresence>
 
       {/* CONTAINER */}
-      <motion.div
-
-        initial={{
-          opacity: 0,
-          y: 40,
-        }}
-
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-
-        transition={{
-          duration: 0.6,
-        }}
-
-        className="bg-[#111]/90 backdrop-blur w-full max-w-4xl rounded-[32px] p-6 border border-gray-800 shadow-[0_0_80px_rgba(0,0,0,0.6)] relative z-10"
-      >
+      <div className="bg-[#111]/90 backdrop-blur w-full max-w-4xl rounded-[32px] p-6 border border-gray-800">
 
         {/* HEADER */}
         <div className="mb-10">
@@ -309,7 +294,6 @@ export default function Pagamento() {
         {/* CALENDÁRIO */}
         <div className="mb-12">
 
-          {/* TOPO */}
           <div className="flex items-center justify-between mb-6">
 
             {/* ESQUERDA */}
@@ -367,23 +351,11 @@ export default function Pagamento() {
 
             {dias.map((d, i) => (
 
-              <motion.button
+              <button
 
                 key={i}
 
                 disabled={d.passou}
-
-                whileHover={
-                  !d.passou
-                    ? { scale: 1.05 }
-                    : {}
-                }
-
-                whileTap={
-                  !d.passou
-                    ? { scale: 0.95 }
-                    : {}
-                }
 
                 onClick={() => {
 
@@ -416,11 +388,7 @@ export default function Pagamento() {
                   {d.numero}
                 </p>
 
-                <p className="text-xs uppercase mt-1 opacity-70">
-                  {d.mes}
-                </p>
-
-              </motion.button>
+              </button>
 
             ))}
 
@@ -439,13 +407,9 @@ export default function Pagamento() {
 
             {profissionais.map((p, i) => (
 
-              <motion.div
+              <div
 
                 key={i}
-
-                whileHover={{
-                  scale: 1.05,
-                }}
 
                 onClick={() => {
                   setProfissional(i)
@@ -472,11 +436,7 @@ export default function Pagamento() {
                   {p.nome}
                 </h3>
 
-                <p className="text-center text-yellow-400 text-sm mt-1">
-                  ⭐ {p.nota}
-                </p>
-
-              </motion.div>
+              </div>
 
             ))}
 
@@ -488,20 +448,7 @@ export default function Pagamento() {
         {profissional !== null &&
           diaSelecionado !== null && (
 
-          <motion.div
-
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-
-            className="space-y-10"
-          >
+          <div className="space-y-10">
 
             {Object.entries(horarios).map(
               ([periodo, lista]) => (
@@ -521,21 +468,11 @@ export default function Pagamento() {
 
                       return (
 
-                        <motion.button
+                        <button
 
                           key={i}
 
-                          whileHover={
-                            !ocupado
-                              ? { scale: 1.04 }
-                              : {}
-                          }
-
-                          whileTap={
-                            !ocupado
-                              ? { scale: 0.95 }
-                              : {}
-                          }
+                          disabled={ocupado}
 
                           onClick={() =>
                             !ocupado &&
@@ -558,7 +495,7 @@ export default function Pagamento() {
                             ? "Ocupado"
                             : h}
 
-                        </motion.button>
+                        </button>
 
                       )
                     })}
@@ -569,44 +506,26 @@ export default function Pagamento() {
               )
             )}
 
-          </motion.div>
+          </div>
         )}
 
         {/* BOTÃO */}
         {horario && (
 
-          <motion.button
-
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-
-            whileHover={{
-              scale: 1.02,
-            }}
-
-            whileTap={{
-              scale: 0.98,
-            }}
+          <button
 
             onClick={confirmar}
 
-            className="w-full mt-12 bg-[#C89B55] text-black py-5 rounded-3xl font-bold text-lg shadow-[0_0_30px_rgba(200,155,85,0.4)]"
+            className="w-full mt-12 bg-[#C89B55] text-black py-5 rounded-3xl font-bold text-lg"
           >
 
             Confirmar via WhatsApp
 
-          </motion.button>
+          </button>
 
         )}
 
-      </motion.div>
+      </div>
 
     </div>
   )
