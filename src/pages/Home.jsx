@@ -26,7 +26,7 @@ export default function Home() {
 
             <div className="flex flex-wrap gap-4">
               <NavLink
-                to="/pagamento"
+                to="/services"
                 className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-md font-semibold transition-colors shadow-lg"
               >
                 Agendar Agora
@@ -180,7 +180,7 @@ export default function Home() {
 
           <div className="flex flex-wrap gap-4 justify-center">
             <NavLink
-              to="/pagamento"
+              to="/services"
               className="inline-block bg-white text-amber-500 hover:bg-neutral-100 px-8 py-3 rounded-md font-semibold transition-colors shadow-lg"
             >
               Agendar Online

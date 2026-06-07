@@ -14,7 +14,7 @@ const services = [
     description:
       "Corte clássico masculino com acabamento impecável.",
 
-    price: "R$ 45",
+    price: 45,
 
     duration: "30 min",
 
@@ -29,7 +29,7 @@ const services = [
     description:
       "Corte completo com design de barba e hidratação.",
 
-    price: "R$ 70",
+    price: 70,
 
     duration: "50 min",
 
@@ -44,7 +44,7 @@ const services = [
     description:
       "Design e aparação com navalha e toalha quente.",
 
-    price: "R$ 35",
+    price: 35,
 
     duration: "25 min",
 
@@ -59,7 +59,7 @@ const services = [
     description:
       "Degradê moderno com acabamento detalhado.",
 
-    price: "R$ 55",
+    price: 55,
 
     duration: "40 min",
 
@@ -74,7 +74,7 @@ const services = [
     description:
       "Coloração profissional com produtos premium.",
 
-    price: "R$ 120",
+    price: 120,
 
     duration: "90 min",
 
@@ -89,7 +89,7 @@ const services = [
     description:
       "Atendimento especial para crianças.",
 
-    price: "R$ 35",
+    price: 35,
 
     duration: "25 min",
 
@@ -159,14 +159,14 @@ export default function Services() {
                 </div>
 
                 <NavLink
-
                   to="/pagamento"
-
+                  state={{
+                    servico: service.name,
+                    valor: service.price
+                  }}
                   className="bg-[#C89B55] hover:opacity-90 text-black px-5 py-2 rounded-xl font-semibold transition"
                 >
-
                   Agendar
-
                 </NavLink>
 
               </div>

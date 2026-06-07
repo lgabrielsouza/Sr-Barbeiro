@@ -5,10 +5,12 @@ import Pagamento from "./pages/pagamento"
 import Confirmado from "./pages/confirmado"
 import Admin from "./pages/admin"
 import Services from "./pages/Services"
+import Login from "./pages/Login"
 
 export default function App() {
   return (
     <Routes>
+      <Route path="/login" element={<Login />} />
       <Route path="/" element={<Home />} />
       <Route path="/pagamento" element={<Pagamento />} />
       <Route path="/confirmado" element={<Confirmado />} />

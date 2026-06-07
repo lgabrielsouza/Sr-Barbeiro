@@ -1,7 +1,8 @@
-// 📁 src/pages/pagamento.jsx
+import { supabase } from "../lib/supabase";
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence, number } from "framer-motion"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useLocation } from "react-router-dom"
 
 import {
   FaChevronLeft,
@@ -14,10 +15,40 @@ export default function Pagamento() {
   const [diaSelecionado, setDiaSelecionado] = useState(null)
   const [profissional, setProfissional] = useState(null)
   const [horario, setHorario] = useState(null)
+  
+  const location = useLocation()
+
+  const servicoRecebido =
+    location.state?.servico
+
+  const valorRecebido =
+    location.state?.valor
+
+  const [agendamentos, setAgendamentos] = useState([])
 
   const [offsetSemana, setOffsetSemana] = useState(0)
 
   const [toast, setToast] = useState(false)
+
+  //temporario
+  const carregarAgendamentos = async () => {
+
+  const { data, error } = await supabase
+    .from("agendamentos")
+    .select("*")
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    setAgendamentos(data)
+  }
+
+  useEffect(() => {
+    carregarAgendamentos()
+  }, [])
+
 
   // 📅 GERAR SEMANA
   const gerarSemana = () => {
@@ -115,6 +146,41 @@ export default function Pagamento() {
     },
   ]
 
+  //SERVIÇOS
+  const servicos = [
+
+  {
+    nome: "Corte Tradicional",
+    valor: 45
+  },
+
+  {
+    nome: "Barba",
+    valor: 35
+  },
+
+  {
+    nome: "Corte + Barba",
+    valor: 70
+  },
+
+  {
+    nome: "Corte Infantil",
+    valor: 35
+  },
+
+  {
+    nome: "Platinado",
+    valor: 120
+  },
+
+  {
+    nome: "Degradê",
+    valor: 55
+  }
+
+]
+
   // ⏰ HORÁRIOS
   const horarios = {
 
@@ -138,93 +204,89 @@ export default function Pagamento() {
     ],
   }
 
-  // 💾 AGENDAMENTOS
-  const agendamentos =
-    JSON.parse(
-      localStorage.getItem("agendamentos")
-    ) || []
 
   // 🔒 HORÁRIOS OCUPADOS
-  const horariosOcupados = agendamentos
+    const horariosOcupados = agendamentos
+      .filter(
+        (item) =>
+          item.data === dias[diaSelecionado]?.full &&
+          item.profissional === profissionais[profissional]?.nome
+      )
+        .map((item) => item.horario)
 
-    .filter(
-      (item) =>
-        item.data === dias[diaSelecionado]?.full &&
-        item.profissional ===
-          profissionais[profissional]?.nome &&
-        item.status === "confirmado"
-    )
+        const horarioEstaOcupado = (hora) => {
+          return horariosOcupados.includes(hora)
+        }
 
-    .map((item) => item.horario)
+  const salvarAgendamento = async () => {
 
-  // 💾 SALVAR AGENDAMENTO
-  const salvarAgendamento = () => {
+  const dia = dias[diaSelecionado]
 
-    const agendamento = {
+  const barbeiro = profissionais[profissional]
 
-      cliente: "Cliente WhatsApp",
+  const { data, error } = await supabase
+    .from("agendamentos")
+    .insert([
+      {
+        cliente: "Cliente WhatsApp",
+        profissional: barbeiro.nome,
+        data: dia.full,
+        horario: horario,
+        servico: servicoRecebido,
+        valor: Number(valorRecebido),
+        status: "pendente",
+        pagamento: "pendente"
+      }
+    ])
 
-      data: dias[diaSelecionado].full,
-
-      horario,
-
-      profissional:
-        profissionais[profissional].nome,
-
-      status: "pendente",
-
-      pagamento: "pendente",
-    }
-
-    const lista =
-      JSON.parse(
-        localStorage.getItem("agendamentos")
-      ) || []
-
-    lista.push(agendamento)
-
-    localStorage.setItem(
-      "agendamentos",
-      JSON.stringify(lista)
-    )
+  if (error) {
+    console.error(error)
+    alert("Erro ao salvar agendamento")
+    return false
   }
 
-  // 📲 CONFIRMAR
-  const confirmar = () => {
+  console.log("Agendamento salvo:", data)
+  return true
+}
 
-    if (
-      diaSelecionado === null ||
-      profissional === null ||
-      !horario
-    ) return
 
-    salvarAgendamento()
+const confirmar = async () => {
 
-    setToast(true)
+  if (
+    diaSelecionado === null ||
+    profissional === null ||
+    !horario
+  ) return
 
-    setTimeout(() => {
+  const sucesso = await salvarAgendamento()
 
-      setToast(false)
+  if (!sucesso) return
 
-      const dia = dias[diaSelecionado]
+  setToast(true)
 
-      const nome =
-        profissionais[profissional].nome
+  setTimeout(() => {
 
-      const mensagem = `Olá! Quero agendar um horário:
+    setToast(false)
+
+    const dia = dias[diaSelecionado]
+
+    const nome =
+      profissionais[profissional].nome
+
+    const mensagem = `Olá! Quero agendar um horário:
 
 📅 Data: ${dia.full}
 ⏰ Horário: ${horario}
 ✂️ Profissional: ${nome}`
 
-      const url = `https://wa.me/5583999999999?text=${encodeURIComponent(
-        mensagem
-      )}`
+    const url = `https://wa.me/5583999999999?text=${encodeURIComponent(
+      mensagem
+    )}`
 
-      window.open(url, "_blank")
+    window.open(url, "_blank")
 
-    }, 1800)
-  }
+  }, 1800)
+}
 
   return (
 
@@ -396,6 +458,24 @@ export default function Pagamento() {
 
         </div>
 
+        {/* SERVIÇO RECEBIDO*/}   
+        <div className="mb-8 p-5 rounded-2xl bg-[#111] border border-[#C89B55]">
+
+          <h2 className="text-2xl font-bold">
+            Serviço Selecionado
+          </h2>
+
+          <p className="mt-3 text-lg">
+            {servicoRecebido}
+          </p>
+
+          <p className="text-[#C89B55] font-bold text-xl mt-1">
+            R$ {valorRecebido}
+          </p>
+
+        </div>
+
+
         {/* PROFISSIONAIS */}
         <div className="mb-12">
 
@@ -528,5 +608,7 @@ export default function Pagamento() {
       </div>
 
     </div>
+
+
   )
 }

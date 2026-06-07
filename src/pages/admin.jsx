@@ -1,17 +1,61 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { supabase } from "../lib/supabase"
 
 export default function Admin() {
 
+  //LOGIN
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    verificarUsuario()
+
+  }, [])
+
   const [aba, setAba] = useState("dashboard")
 
-  const [agendamentos, setAgendamentos] = useState(() => {
+  const [agendamentos, setAgendamentos] = useState([])
 
-    return (
-      JSON.parse(
-        localStorage.getItem("agendamentos")
-      ) || []
-    )
-  })
+  useEffect(() => {
+    carregarAgendamentos()
+  }, [])
+
+  const faturamentoTotal = agendamentos
+    .filter(item => item.status === "confirmado")
+    .reduce((total, item) => total + Number(item.valor || 0), 0)
+
+
+  const carregarAgendamentos = async () => {
+
+    const { data, error } = await supabase
+      .from("agendamentos")
+      .select("*")
+      .order("id", { ascending: false })
+
+    if (!error) {
+      setAgendamentos(data)
+    }
+  }
+
+  const verificarUsuario = async () => {
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
+
+    if (!session) {
+      navigate("/login")
+    }
+  }
+
+  const sair = async () => {
+
+    await supabase.auth.signOut()
+
+    navigate("/login")
+  }
+
 
   return (
 
@@ -59,6 +103,13 @@ export default function Admin() {
             Clientes
           </button>
 
+          <button
+            onClick={sair}
+            className="w-full mt-auto bg-red-500 hover:bg-red-600 px-4 py-3 rounded-xl"
+          >
+            Sair
+          </button>
+
         </div>
 
       </aside>
@@ -84,7 +135,7 @@ export default function Admin() {
             </div>
 
             {/* CARDS */}
-            <div className="grid md:grid-cols-3 gap-6 mb-10">
+            <div className="grid md:grid-cols-4 gap-6 mb-10">
 
               <div className="bg-[#111] border border-gray-800 rounded-3xl p-6">
 
@@ -123,20 +174,30 @@ export default function Admin() {
                 </p>
 
                 <h3 className="text-4xl font-bold mt-3 text-yellow-400">
-
                   {
                     agendamentos.filter(
                       item => item.status === "pendente"
                     ).length
                   }
+                </h3>
 
+              </div>
+
+              <div className="bg-[#111] border border-[#C89B55]/30 rounded-3xl p-6">
+
+                <p className="text-[#C89B55]">
+                  Faturamento
+                </p>
+
+                <h3 className="text-4xl font-bold mt-3 text-[#C89B55]">
+                  R$ {faturamentoTotal}
                 </h3>
 
               </div>
 
             </div>
 
-            {/* AGENDAMENTOS */}
+              {/* AGENDAMENTOS */}
             <div className="space-y-5">
 
               {agendamentos.map((item, index) => (
@@ -179,22 +240,17 @@ export default function Admin() {
 
                       <button
 
-                        onClick={() => {
+                        onClick={async () => {
 
-                          const novosAgendamentos = [...agendamentos]
+                          await supabase
+                            .from("agendamentos")
+                            .update({
+                              status: "confirmado",
+                              pagamento: "confirmado"
+                            })
+                            .eq("id", item.id)
 
-                          novosAgendamentos[index].status =
-                            "confirmado"
-
-                          novosAgendamentos[index].pagamento =
-                            "confirmado"
-
-                          setAgendamentos(novosAgendamentos)
-
-                          localStorage.setItem(
-                            "agendamentos",
-                            JSON.stringify(novosAgendamentos)
-                          )
+                          carregarAgendamentos()
                         }}
 
                         className="bg-[#C89B55] hover:opacity-90 text-black px-4 py-2 rounded-xl font-semibold transition"
@@ -206,29 +262,25 @@ export default function Admin() {
 
                     )}
 
-                    <button
+                      <button
 
-                      onClick={() => {
+                        onClick={async () => {
 
-                        const novaLista =
-                          agendamentos.filter(
-                            (_, i) => i !== index
-                          )
+                        await supabase
+                          .from("agendamentos")
+                          .delete()
+                          .eq("id", item.id)
 
-                        setAgendamentos(novaLista)
+                          carregarAgendamentos()
 
-                        localStorage.setItem(
-                          "agendamentos",
-                          JSON.stringify(novaLista)
-                        )
-                      }}
+                        }}
 
                       className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl transition"
                     >
 
                       Remover
 
-                    </button>
+                      </button>
 
                   </div>
 
