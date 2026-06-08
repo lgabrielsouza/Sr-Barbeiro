@@ -13,13 +13,19 @@ export default function Admin() {
 
   }, [])
 
+
   const [aba, setAba] = useState("dashboard")
 
   const [agendamentos, setAgendamentos] = useState([])
 
+  const [clientes, setClientes] = useState([])
+
+  //CADASTRO CLIENTES/ADMIN
   useEffect(() => {
     carregarAgendamentos()
+    carregarClientes()
   }, [])
+
 
   const faturamentoTotal = agendamentos
     .filter(item => item.status === "confirmado")
@@ -38,6 +44,19 @@ export default function Admin() {
     }
   }
 
+  const carregarClientes = async () => {
+
+  const { data, error } = await supabase
+    .from("clientes")
+    .select("*")
+    .order("id", { ascending: false })
+
+  if (!error) {
+    setClientes(data)
+    }
+  }
+
+
   const verificarUsuario = async () => {
 
     const {
@@ -55,7 +74,6 @@ export default function Admin() {
 
     navigate("/login")
   }
-
 
   return (
 
@@ -294,8 +312,56 @@ export default function Admin() {
 
         )}
 
+        {aba === "clientes" && (
+
+          <div>
+
+            <div className="mb-10">
+
+              <h2 className="text-4xl font-bold">
+                Clientes
+              </h2>
+
+              <p className="text-gray-500 mt-2">
+                Clientes cadastrados
+              </p>
+
+            </div>
+
+            <div className="space-y-4">
+
+              {clientes.map((cliente) => (
+
+                <div
+                  key={cliente.id}
+                  className="bg-[#111] border border-gray-800 rounded-3xl p-6"
+                >
+
+                  <h3 className="text-xl font-bold">
+                    {cliente.nome}
+                  </h3>
+
+                  <p className="text-gray-400 mt-2">
+                    {cliente.email}
+                  </p>
+
+                  <p className="text-gray-500">
+                    {cliente.telefone}
+                  </p>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+        )}
+
       </main>
 
     </div>
+
   )
 }

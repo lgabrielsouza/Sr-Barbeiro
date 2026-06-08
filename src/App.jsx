@@ -6,11 +6,15 @@ import Confirmado from "./pages/confirmado"
 import Admin from "./pages/admin"
 import Services from "./pages/Services"
 import Login from "./pages/Login"
+import Register from "./pages/Register"
+import LoginCliente from "./pages/LoginCliente"
 
 export default function App() {
   return (
     <Routes>
+      <Route path="/cadastro" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/login-cliente" element={<LoginCliente />} />
       <Route path="/" element={<Home />} />
       <Route path="/pagamento" element={<Pagamento />} />
       <Route path="/confirmado" element={<Confirmado />} />
