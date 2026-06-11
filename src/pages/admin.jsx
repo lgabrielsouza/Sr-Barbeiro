@@ -20,17 +20,89 @@ export default function Admin() {
 
   const [clientes, setClientes] = useState([])
 
+  const [periodo, setPeriodo] = useState("mensal")
+
   //CADASTRO CLIENTES/ADMIN
   useEffect(() => {
     carregarAgendamentos()
     carregarClientes()
   }, [])
 
-
   const faturamentoTotal = agendamentos
     .filter(item => item.status === "confirmado")
     .reduce((total, item) => total + Number(item.valor || 0), 0)
 
+  const hoje = new Date()
+
+  // FATURAMENTO MENSAL
+
+  const faturamentoMensal = agendamentos
+    .filter(item => {
+
+      const dataCriacao = new Date(item.created_at)
+
+      return (
+        item.status === "confirmado" &&
+        dataCriacao.getMonth() === hoje.getMonth() &&
+        dataCriacao.getFullYear() === hoje.getFullYear()
+      )
+
+    })
+    .reduce(
+      (total, item) =>
+        total + Number(item.valor || 0),
+      0
+    )
+
+  // FATURAMENTO SEMANAL
+
+  const seteDiasAtras = new Date()
+
+  seteDiasAtras.setDate(
+    hoje.getDate() - 7
+  )
+
+  const faturamentoSemanal = agendamentos
+    .filter(item => {
+
+      const dataCriacao = new Date(item.created_at)
+
+      return (
+        item.status === "confirmado" &&
+        dataCriacao >= seteDiasAtras
+      )
+
+    })
+    .reduce(
+      (total, item) =>
+        total + Number(item.valor || 0),
+      0
+    )
+
+  // GRÁFICO
+
+  const faturamentoPorDia = {}
+
+  agendamentos
+    .filter(item => item.status === "confirmado")
+    .forEach(item => {
+
+      const dataAgendamento = item.data
+
+      if (!faturamentoPorDia[dataAgendamento]) {
+        faturamentoPorDia[dataAgendamento] = 0
+      }
+
+      faturamentoPorDia[dataAgendamento] += Number(item.valor || 0)
+
+    })
+
+  const dadosGrafico = Object.entries(
+    faturamentoPorDia
+  ).map(([data, valor]) => ({
+    data,
+    valor
+  }))
 
   const carregarAgendamentos = async () => {
 
@@ -100,14 +172,14 @@ export default function Admin() {
           </button>
 
           <button
-            onClick={() => setAba("pagamentos")}
+            onClick={() => setAba("financas")}
             className={`w-full text-left px-5 py-4 rounded-2xl transition font-medium ${
-              aba === "pagamentos"
+              aba === "financas"
                 ? "bg-[#C89B55] text-black"
                 : "hover:bg-[#1a1a1a]"
             }`}
           >
-            Pagamentos
+            Finanças
           </button>
 
           <button
@@ -358,6 +430,141 @@ export default function Admin() {
           </div>
 
         )}
+
+      {aba === "financas" && (
+
+        <div>
+
+          <div className="mb-10">
+
+            <h2 className="text-4xl font-bold">
+              Finanças
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Controle financeiro da barbearia
+            </p>
+
+          </div>
+
+          <div className="flex gap-4 mb-8">
+
+            <button
+              onClick={() => setPeriodo("semanal")}
+              className={`px-5 py-3 rounded-xl ${
+                periodo === "semanal"
+                  ? "bg-[#C89B55] text-black"
+                  : "bg-[#111]"
+              }`}
+            >
+              Semanal
+            </button>
+
+            <button
+              onClick={() => setPeriodo("mensal")}
+              className={`px-5 py-3 rounded-xl ${
+                periodo === "mensal"
+                  ? "bg-[#C89B55] text-black"
+                  : "bg-[#111]"
+              }`}
+            >
+              Mensal
+            </button>
+
+          </div>
+
+          <div className="bg-[#111] border border-[#C89B55]/30 rounded-3xl p-8">
+
+            <p className="text-gray-400">
+              Faturamento
+            </p>
+
+            <h3 className="text-5xl font-bold text-[#C89B55] mt-3">
+
+              R$
+
+              {
+                periodo === "mensal"
+                  ? faturamentoMensal
+                  : faturamentoSemanal
+              }
+
+            </h3>
+
+          </div>
+
+              <div className="grid md:grid-cols-2 gap-6 mt-8">
+
+  <div className="bg-[#111] border border-green-500/30 rounded-3xl p-6">
+
+    <p className="text-green-400">
+      Faturamento Semanal
+    </p>
+
+    <h3 className="text-4xl font-bold mt-3 text-green-400">
+      R$ {faturamentoSemanal}
+    </h3>
+
+  </div>
+
+  <div className="bg-[#111] border border-[#C89B55]/30 rounded-3xl p-6">
+
+    <p className="text-[#C89B55]">
+      Faturamento Mensal
+    </p>
+
+    <h3 className="text-4xl font-bold mt-3 text-[#C89B55]">
+      R$ {faturamentoMensal}
+    </h3>
+
+  </div>
+
+</div>
+
+      <div className="bg-[#111] border border-gray-800 rounded-3xl p-6 mt-8">
+
+          <h3 className="text-2xl font-bold mb-6">
+            Faturamento por Dia
+          </h3>
+
+          <div className="space-y-3">
+
+            {dadosGrafico.length > 0 ? (
+
+              dadosGrafico.map((item, index) => (
+
+                <div
+                  key={index}
+                  className="flex justify-between items-center border border-gray-800 rounded-xl p-4"
+                >
+
+                  <span>
+                    {item.data}
+                  </span>
+
+                  <span className="text-[#C89B55] font-bold">
+                    R$ {item.valor}
+                  </span>
+
+                </div>
+
+              ))
+
+            ) : (
+
+              <p className="text-gray-500">
+                Nenhum faturamento encontrado.
+              </p>
+
+            )}
+
+          </div>
+
+        </div>
+
+        </div>
+
+          )}
 
       </main>
 
