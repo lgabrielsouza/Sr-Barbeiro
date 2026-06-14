@@ -224,20 +224,29 @@ export default function Pagamento() {
 
   const barbeiro = profissionais[profissional]
 
+    const {
+    data: { user }
+  } = await supabase.auth.getUser()
+
   const { data, error } = await supabase
-    .from("agendamentos")
-    .insert([
-      {
-        cliente: "Cliente WhatsApp",
-        profissional: barbeiro.nome,
-        data: dia.full,
-        horario: horario,
-        servico: servicoRecebido,
-        valor: Number(valorRecebido),
-        status: "pendente",
-        pagamento: "pendente"
-      }
-    ])
+  .from("agendamentos")
+  .insert([
+    {
+      cliente: user?.email,
+      profissional: barbeiro.nome,
+      data: dia.full,
+      horario: horario,
+      servico: servicoRecebido,
+      valor: Number(valorRecebido),
+      status: "pendente",
+      pagamento: "pendente"
+    }
+  ])
+  .select()
+
+    console.log("EMAIL:", user?.email)
+    console.log("ERROR:", error)
+    console.log("DATA:", data)
 
   if (error) {
     console.error(error)
